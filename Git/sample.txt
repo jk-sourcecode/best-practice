@@ -1,0 +1,7 @@
+Code merge
+
+git checkout release/rc
+git pull
+git status
+git merge --no-ff origin/develop
+git push
