@@ -1,0 +1,8 @@
+version: '2.2'
+services:
+  secure-api-jwt:
+    build: .
+    ports:
+      - "3000:3000"
+    container_name: api-jwt
+    
