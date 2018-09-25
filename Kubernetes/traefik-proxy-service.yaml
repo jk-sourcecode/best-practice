@@ -1,0 +1,29 @@
+{
+  "kind": "Service",
+  "apiVersion": "v1",
+  "metadata": {
+    "name": "traefik-proxy",
+    "namespace": "default",
+    "annotations": {
+      "service.beta.kubernetes.io/aws-load-balancer-backend-protocol": "http",
+      "service.beta.kuberneates.io/aws-load-balancer-ssl-cert": "arn:aws:acm:eu-west-1:ACCOUNTID:certificate/CERT-ID"
+    }
+  },
+  "spec": {
+    "ports": [
+      {
+        "protocol": "TCP",
+        "port": 8090,
+        "targetPort": 80,
+        "nodePort": 32289
+      }
+    ],
+    "selector": {
+      "app": "traefik-proxy",
+      "tier": "proxy"
+    },
+    "type": "LoadBalancer",
+    "sessionAffinity": "None",
+    "externalTrafficPolicy": "Cluster"
+  }
+}

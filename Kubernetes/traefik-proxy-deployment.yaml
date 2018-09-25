@@ -1,0 +1,85 @@
+{
+  "kind": "Deployment",
+  "apiVersion": "extensions/v1beta1",
+  "metadata": {
+    "name": "traefik-proxy",
+    "namespace": "default",
+    "labels": {
+      "app": "traefik-proxy",
+      "tier": "proxy"
+    },
+    "annotations": {
+      "deployment.kubernetes.io/revision": "1"
+    }
+  },
+  "spec": {
+    "replicas": 1,
+    "selector": {
+      "matchLabels": {
+        "app": "traefik-proxy",
+        "tier": "proxy"
+      }
+    },
+    "template": {
+      "metadata": {
+        "creationTimestamp": null,
+        "labels": {
+          "app": "traefik-proxy",
+          "tier": "proxy"
+        }
+      },
+      "spec": {
+        "containers": [
+          {
+            "name": "traefik-proxy",
+            "image": "traefik:v1.2.0-rc1-alpine",
+            "args": [
+              "--web",
+              "--kubernetes"
+            ],
+            "ports": [
+              {
+                "name": "traefik-proxy",
+                "hostPort": 80,
+                "containerPort": 80,
+                "protocol": "TCP"
+              },
+              {
+                "name": "traefik-ui",
+                "containerPort": 8080,
+                "protocol": "TCP"
+              }
+            ],
+            "resources": {
+              "limits": {
+                "cpu": "200m",
+                "memory": "30Mi"
+              },
+              "requests": {
+                "cpu": "100m",
+                "memory": "20Mi"
+              }
+            },
+            "terminationMessagePath": "/dev/termination-log",
+            "terminationMessagePolicy": "File",
+            "imagePullPolicy": "IfNotPresent"
+          }
+        ],
+        "restartPolicy": "Always",
+        "terminationGracePeriodSeconds": 60,
+        "dnsPolicy": "ClusterFirst",
+        "securityContext": {},
+        "schedulerName": "default-scheduler"
+      }
+    },
+    "strategy": {
+      "type": "RollingUpdate",
+      "rollingUpdate": {
+        "maxUnavailable": 1,
+        "maxSurge": 1
+      }
+    },
+    "revisionHistoryLimit": 10,
+    "progressDeadlineSeconds": 600
+  }
+}
